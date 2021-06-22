@@ -1,0 +1,68 @@
+#geom_col: 
+
+df <- read.csv("C:/Users/82105/Desktop/학위논문/의료인2차(학위).csv")
+
+df %>% count(occu) %>% mutate(prop=n/sum(n)) %>% ggplot(aes(x=occu,y=n)) + geom_col(fill = "steelblue")
+df %>% count(occu) %>% mutate(prop=n/sum(n)) %>% ggplot(aes(x=occu, y=n)) + geom_bar(stat = 'identity', fill="steelblue")
+
+# geom_col() = geom_bar(stat='identity')
+
+
+df %>% 
+  ggplot(aes(x=occu)) + geom_bar(fill='steelblue')
+
+#geom_bar
+df %>% group_by(occu) %>% summarise(pdi=mean(PDI)) %>% 
+  ggplot(aes(x=reorder(occu,pdi), y= pdi)) + geom_col(fill = "steelblue") +
+  geom_text(aes(label=paste0(round(pdi,2),"점")),position=position_fill(), colour="white")+coord_flip()
+
+
+df %>% group_by(occu) %>% summarise(ee= mean(ee), cynism=mean(cynism)) %>% 
+  ggplot(aes(x=occu,y=ee,)) + geom_bar(stat="identity") 
+
+df <- df %>% mutate_at(vars(contact), as.factor)
+df$con
+
+df %>% group_by(occu, contact) %>% summarise(ee=mean(EE)) %>% 
+ggplot(aes(x= interaction(occu,contact), y=ee, fill=contact)) + geom_col() + 
+  geom_text(aes(label=paste( round(ee,2), "점")), position= position_dodge(width = 1), vjust=-0.9) + coord_cartesian(ylim = c(0,5))
+
+
+# coord_cartesian(ylim): y축의 범위 조정
+##interaction / reorder(x변수, y변수(+/-))
+# geom_bar에서 stat="count" 사용하는 것은 x변수나 y변수 하나만 존재할 때
+df %>% ggplot(aes(x=occu, fill=workplace)) + geom_bar(position = 'fill')
+
+df %>% count(occu,workplace) %>% mutate(n=n/sum(n)) %>% ggplot(aes(x=occu, y=n, fill=workplace))+ 
+  geom_col(position = 'dodge') + scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label=paste(round(n*100,1),"%")), position=position_dodge(width = 1), vjust=-0.9)+labs(y="%") + 
+  coord_cartesian(ylim=c(0,0.5))
+
+
+df <- df %>% mutate(ratio= round(workhour/ breaktime, digits = 1))
+df %>% filter(ratio!="Inf") %>% group_by(workplace) %>% summarise(ratio=mean(ratio, na.rm=T)) %>% 
+  ggplot(aes(x= reorder(workplace, -ratio), y=ratio))+geom_col(aes(fill=ratio))+
+  scale_fill_gradient2(low = "white", mid="yellow", high = "red" ) + 
+  geom_text(aes(label=round(ratio,1)), vjust=-0.5) + coord_cartesian(ylim = c(0,7))+
+  theme(axis.text.x = element_text(angle = 45))
+
+# position: dodge / fill
+
+# cumsum: 누적 합 구하기.
+?position_fill
+
+#geom_col :aes()에 x,y가 있어줘야 함.
+
+
+
+
+#geom_bar :aes()에 x, fill이 있어야
+
+df %>% group_by(age1) %>% summarise(stress=mean(stress)) %>%
+  ggplot(aes(x=age1, y= stress)) + geom_col()
+
+df %>% count(age1, occu) %>% group_by(age1) %>% mutate(sum=n/sum(n)) %>%  ## group_by해서 mutate하면 group별로 구할 수 있음.
+  ggplot(aes(x=age1, y= sum,fill=occu)) + geom_col(position = 'fill') + 
+  geom_text(aes(label=round(sum*100,1)),position=position_fill(0.5)) + scale_y_continuous(labels = scales::percent)
+
+#reorder: (X: ~ y: - ) # 내림차순 정렬

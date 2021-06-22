@@ -1,0 +1,79 @@
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(ggthemes)
+
+
+q<-ggplot(data = data.frame(kor,eng), aes(x = kor, y = eng))
+q
+q + geom_point() + stat_smooth(method="lm")
+p + scale_fill_brewer(palette = "Greens")
+
+
+
+# ggplot에 단일 색상 입히기 -------------------------------------------------------
+install.packages('ggthemes', dependencies = TRUE)
+
+p<-Orange%>%
+  group_by(Tree)%>%
+  summarize(Sum.circumference=sum(circumference))%>%
+  ggplot(aes(Tree, Sum.circumference, fill=Tree))+
+  geom_bar(stat='identity')
+
+p + scale_fill_manual(values = c( "#FFFFFF", "#FFCC00", "#FF9900", 
+                                  "#FF6600", "#FF3300"))
+
+# 팔레트 색상 ------------------------------------------------------------------
+p + scale_fill_brewer(palette = "Browns") #색상은 앞글자 대문자로 Greys/ Reds/ Blues / Greens / Purples / YlorRd
+p + scale_fill_brewer(palette = "Browns",direction = -1) #-1: 색상
+
+# 상호작용  plot --------------------------------------------------------------
+##colour: 선형 모델 색상 구분
+##fill: 바차트 색상 구분
+p <- ggplot(data,aes(x=Q58,y=Q18r,colour=pted_t2))+geom_smooth(method="lm",se=F)
+p<-p+geom_abline(intercept=reg3$coef[1],slope=reg3$coef[2],colour="orange",linetype=2)
+p<-p+geom_abline(intercept=reg3$coef[1]+reg3$coef[3],slope=reg3$coef[2]+reg3$coef[4],
+                 colour="green",linetype=2)
+
+
+# 정규분포곡선 ------------------------------------------------------------------
+a<-ggplot(embi.data, aes(pted)) + stat_function(
+  fun = dnorm,
+  args = list(mean = m, sd = sd),
+  colour = "black",
+  size = 1)
+
+a+ geom_text(x = 2.6, y = 0.4,size=5, label = 'N(1.51,0.79²)') + geom_vline(
+  xintercept = 1.51,
+  colour = 'red',
+  linetype = 'dashed',
+  size = 1.1,
+  alpha = 0.3
+) + theme_gdocs()+
+  labs(x='울분',y='')
+
+
+## 순서변경 ---------------
+scale_x_discrete() # x축 순서변경경
+scale_colour_discrete() # 범례의 순서 변경
+scale_fill_discrete() # box플랏에서 범례 순서변경
+scale_linetype_discrete() #직선 모양 변경
+
+
+#축 변경----------------------
+labs(x,y,title,subtitle,colour,fill,linetype)#축이름 변경
+lims(x=c())#범위 변경
+scale_x_continuous(breaks = c(10,20,30,40,50,60)) #x축 범위 쪼개기
+scale_x_continuous(position='top') #x축 위로 올리기
+
+#범례
+theme(legend.position = 'top') #범례 위치 변경 // c(x,y)로 그래프 안에 넣을수도 있음
+theme(legend.title = element_blank())#범례 제목 지우기
+
+#plot 커스텀
+coord_flip #x축 y축 변경
+scale_colour_grey() # 흑백으로 변경
+scale_colour_brewer(palette = '색상') #팔레트 색상으로 그래프 점들 변경 
+library(ggthemes)
+
+

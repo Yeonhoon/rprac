@@ -1,0 +1,78 @@
+x <- mtcars %>% ggplot(aes(x=as.factor(cyl), y= disp)) + geom_bar(aes(fill = as.factor(cyl)), stat="summary") + labs(x= "cyl")
+mtcars %>% ggplot(aes(x= factor(cyl), fill= factor(cyl))) + geom_bar()
+
+
+
+mtcars %>%  count(cyl) %>% mutate(per = round(n/sum(n)*100,1)) %>% ggplot(aes(x=factor(cyl), y=per, fill=factor(cyl))) + geom_bar(stat = "identity")
+mtcars %>%  count(cyl) %>% mutate(per = round(n/sum(n)*100,1)) %>% plot_ly(x=~factor(cyl), y= ~per, color = ~factor(cyl))
+
+
+library(r)
+mtcars %>% group_by(cyl,am) %>% summarise(n=n()) %>% mutate(per = round(n/sum(n)*100,1)) %>% 
+  ggplot(aes(x=cyl, y=per, fill=factor(am)))+geom_bar(stat = "identity")
+
+x <- mtcars %>% group_by(cyl) %>% summarise(n=n()) %>% mutate(per = round(n/sum(n)*100,1))
+x %>% ggplot(aes(x=x[[1]], y=per))+ geom_bar(stat = "identity", aes(fill=factor(x[[1]])))
+x$p
+data(tips, package = "reshape2")
+tips
+
+
+data(tips, package = "reshape2")
+
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(scales)  # for percentage scales
+
+
+# percent table: X 변수만 고려할 때-----------------------------------------------------------
+
+tips
+ggplot(tips, aes(x= day,  group=sex)) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+  geom_text(aes(label = scales::percent(..prop..),
+                 y= ..prop.. ), stat= "count", vjust = -.5) +
+  labs(y = "Percent", fill="day") +
+  facet_grid(~sex) +
+  scale_y_continuous(labels = scales::percent)
+mtcars
+library(ggplot2)
+library(scales)
+library(tidyr)
+library(dplyr)
+ggplot(mtcars, aes(x=cyl, fill = gear)) +
+  geom_bar(aes(y=..prop.., fill = factor(..x..)), stat="count") + 
+  geom_text(aes(label=percent(..prop..), y = ..prop..), stat = "count")  + scale_y_continuous(labels = percent)
+
+ggplot(mtcars,aes(x=cyl, y= gear, fill= factor(gear))) + 
+  geom_bar(aes(y=..prop..),stat="identity")
+
+
+
+# 변수 평균에 따른 막대 그래프 --------------------------------------------------------
+dt %>% group_by(occu) %>% summarise(cy=round(mean(cy),digits = 2)) %>% 
+  ggplot(aes(x=reorder(occu,-cy), y= cy, fill=reorder(occu,-cy))) + geom_bar(stat="summary")+
+  geom_text(aes(label=cy), vjust=-1)+
+  coord_cartesian(ylim = c(0,3))+
+  coord_flip()+
+  labs(x="Occupation", y="Cynicism", fill = "Occupation")+
+  scale_fill_brewer(palette = "Purples", direction = -1)
+p
+
+
+# percent plot: X변수와 그룹을 고려 -----------------------------------------------
+library(ggplot2)
+ggplot(mtcars, aes(x=as.factor(cyl), fill=as.factor(gear)))+
+  geom_bar(aes( y=..count../tapply(..count.., ..x.. ,sum)[..x..]), position="stack" ) +
+    ylab('Percent of Cylinder Group, %') +
+  scale_y_continuous(labels = scales::percent)
+
+#geom_text---------------------------------
+xx %>% ggplot(aes(x=importance,y=satisfaction)) + geom_point(colour="red", shape=18, size=3) + 
+  geom_text(aes(y=satisfaction + 0.04, label = name), ) + 
+  coord_cartesian(xlim=c(3.35,4.2),) + labs(x="중요도", y="만족도") +
+  geom_hline(yintercept = mean(xx$satisfaction), linetype="dashed") + 
+  geom_vline(xintercept = mean(xx$importance), linetype="dashed")
+
+
